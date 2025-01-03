@@ -7,10 +7,8 @@
 // const char* password = ""; // NONE!
 // const char* host = "192.168.4.1";
 
-
 //Port
 const int port = 5760;
-
 
 WiFiUDP Udp;
 char packetBuffer[255];
@@ -19,6 +17,7 @@ mavlink_status_t status;
 
 mavlink_gps_raw_int_t gps_raw_int;
 mavlink_global_position_int_t global_position_int;
+// mavlink_radio_status_t radio_status;
 
 void setup() {
   Serial.begin(115200);
@@ -61,11 +60,11 @@ void loop() {
               Serial.print(" | Fix Type: ");
               Serial.print(gps_raw_int.fix_type);
               Serial.print(" | Lat: ");
-              Serial.print((double)gps_raw_int.lat * 1.0e-7);
+              Serial.printf("%.7f", (double)gps_raw_int.lat / 10000000.0);
               Serial.print(" | Lon: ");
-              Serial.print((double)gps_raw_int.lon * 1.0e-7);
+              Serial.printf("%.7f", (double)gps_raw_int.lon / 10000000.0);
               Serial.print(" | Alt: ");
-              Serial.print((double)gps_raw_int.alt * 1.0e-3);
+              Serial.print(gps_raw_int.alt_ellipsoid);
               Serial.print(" | Sats Visible: ");
               Serial.println(gps_raw_int.satellites_visible) + "\n";
               break;
@@ -73,15 +72,16 @@ void loop() {
               mavlink_msg_global_position_int_decode(&msg, &global_position_int);
               Serial.print("GLOBAL_POSITION_INT: ");
               Serial.print(" | Lat: ");
-              Serial.print((double)global_position_int.lat * 1.0e-7);
+              Serial.printf("%.7f", (double)global_position_int.lat / 10000000.0);
               Serial.print(" | Lon: ");
-              Serial.print((double)global_position_int.lon * 1.0e-7);
+              Serial.printf("%.7f", (double)global_position_int.lon/10000000.0);
               Serial.print(" | Alt: ");
-              Serial.print((double)global_position_int.alt * 1.0e-3);
+              Serial.print(global_position_int.alt);
               Serial.print(" | Relative Alt: ");
               Serial.println(global_position_int.relative_alt) + "\n";
               break;
             default:
+
               break;
           }
         }
